@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a25"><title>{% block title %}CampusCare — Campus Safety Response{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<aside class="sidebar"><a class="brand" href="{{ url_for('index') }}"><span class="brand-icon">C</span><span>Campus<span class="brand-light">Care</span><small>SAFETY RESPONSE SYSTEM</small></span></a>
+<div class="nav-label">{{ 'RESPONDER WORKSPACE' if session.get('role') == 'responder' else 'STUDENT WORKSPACE' }}</div><nav class="main-nav">
+{% if session.get('role') == 'responder' %}<a class="nav-link {{ 'active' if page == 'responders' else '' }}" href="{{ url_for('responders') }}"><span class="nav-icon">◉</span>Response queue</a>
+{% else %}
+<a class="nav-link {{ 'active' if page == 'overview' else '' }}" href="{{ url_for('index') }}"><span class="nav-icon">⌂</span>Overview</a>
+<a class="nav-link {{ 'active' if page == 'report' else '' }}" href="{{ url_for('new_report') }}"><span class="nav-icon">＋</span>Report an issue</a>
+<a class="nav-link {{ 'active' if page == 'my-reports' else '' }}" href="{{ url_for('my_reports') }}"><span class="nav-icon">▤</span>My reports</a>
+<a class="nav-link {{ 'active' if page == 'how' else '' }}" href="{{ url_for('how_it_works') }}"><span class="nav-icon">ⓘ</span>How it works</a>{% endif %}</nav>
+<div class="sidebar-bottom"><div class="demo-chip"><span class="pulse"></span> DEMO ENVIRONMENT</div><div class="sidebar-note">CampusCare is a demonstration prototype, not an emergency service. For immediate danger, contact your local emergency services or campus security directly.</div><div class="user-mini"><div class="avatar">{{ 'R' if session.get('role') == 'responder' else 'CC' }}</div><div><strong>{{ session.get('display_name') or ('Campus responder' if session.get('role') == 'responder' else 'Campus community') }}</strong><small>{{ 'Responder portal' if session.get('role') == 'responder' else 'Reporter portal' }}</small></div><span class="online"></span></div></div></aside>
+<main class="main"><header class="topbar"><button class="menu-toggle" aria-label="Toggle navigation" onclick="document.body.classList.toggle('nav-open')">☰</button><div class="crumb">CampusCare <span>/</span> {% block breadcrumb %}Overview{% endblock %}</div><div class="top-actions"><span class="environment"><i></i> {{ 'Responder' if session.get('role') == 'responder' else 'Reporter' }} view</span><a class="switch-role" href="{{ url_for('login', role='responder' if session.get('role') == 'reporter' else 'reporter', switch=1) }}">Switch portal</a><a class="sign-out" href="{{ url_for('logout') }}">Sign out</a></div></header>
+<div class="content">{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flashes">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}<button onclick="this.parentElement.remove()" aria-label="Dismiss">×</button></div>{% endfor %}</div>{% endif %}{% endwith %}{% block content %}{% endblock %}</div>
+<footer class="footer"><span>CampusCare <span class="dot-sep">·</span> Campus Safety Response System</span><span>Demonstration prototype <span class="dot-sep">·</span> No live emergency dispatch</span></footer></main>
+<script src="{{ url_for('static', filename='app.js') }}"></script></body></html>
